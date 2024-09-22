@@ -3,10 +3,18 @@ import { Button, Table, Tag, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { deleteTask } from '../features/tasks/tasksSlice';
-import { motion } from 'framer-motion';
 
 interface TaskListProps {
-  onEdit: (task: any) => void; // Accept an onEdit prop
+  onEdit: (task: any) => void;  
+}
+
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  priority: 'low' | 'medium' | 'high';
+  status: 'in-progress' | 'completed';
 }
 
 const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
@@ -24,6 +32,12 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Define a custom sorter for priority
+  const prioritySorter = (a: Task, b: Task) => {
+    const priorityOrder = { low: 1, medium: 2, high: 3 };
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
+  };
+
   // Define columns for the Ant Design Table
   const columns = [
     {
@@ -40,7 +54,7 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
       title: 'Due Date',
       dataIndex: 'dueDate',
       key: 'dueDate',
-      sorter: (a: any, b: any) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+      sorter: (a: Task, b: Task) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
     },
     {
       title: 'Priority',
@@ -50,6 +64,8 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
         let color = priority === 'high' ? 'red' : priority === 'medium' ? 'orange' : 'green';
         return <Tag color={color}>{priority.toUpperCase()}</Tag>;
       },
+      // Add the sorter for priority
+      sorter: prioritySorter,
     },
     {
       title: 'Status',
@@ -63,7 +79,7 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
     {
       title: 'Action',
       key: 'action',
-      render: (_: any, record: any) => (
+      render: (_: any, record: Task) => (
         <>
           <Button onClick={() => onEdit(record)}>Edit</Button>
           <Button danger onClick={() => handleDelete(record.id)}>
@@ -83,28 +99,9 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
         className="mb-4"
       />
       <Table
-        dataSource={filteredTasks.map(task => ({
-          ...task,
-          key: task.id,
-        }))}
+        dataSource={filteredTasks}
         columns={columns}
         rowKey="id"
-        components={{
-          body: {
-            row: ({ children, ...rest }: { children: React.ReactNode; [key: string]: any }) => (
-              <motion.tr
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                whileHover={{ scale: 1.02 }} // Scale on hover
-                {...rest}
-              >
-                {children}
-              </motion.tr>
-            ),
-          },
-        }}
       />
     </div>
   );
