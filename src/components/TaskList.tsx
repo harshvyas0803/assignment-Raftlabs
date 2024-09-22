@@ -3,6 +3,7 @@ import { Button, Table, Tag, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { deleteTask } from '../features/tasks/tasksSlice';
+import './TaskList.css'; // Import the CSS file
 
 interface TaskListProps {
   onEdit: (task: any) => void;  
@@ -64,7 +65,6 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
         let color = priority === 'high' ? 'red' : priority === 'medium' ? 'orange' : 'green';
         return <Tag color={color}>{priority.toUpperCase()}</Tag>;
       },
-      // Add the sorter for priority
       sorter: prioritySorter,
     },
     {
@@ -81,7 +81,7 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
       key: 'action',
       render: (_: any, record: Task) => (
         <>
-          <Button onClick={() => onEdit(record)}>Edit</Button>
+          <Button className='m-2' onClick={() => onEdit(record)}>Edit</Button>
           <Button danger onClick={() => handleDelete(record.id)}>
             Delete
           </Button>
@@ -102,6 +102,7 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
         dataSource={filteredTasks}
         columns={columns}
         rowKey="id"
+        rowClassName={() => 'task-row'} // Apply class name for hover effect
       />
     </div>
   );
