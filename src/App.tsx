@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Button, Modal } from 'antd';
+import TaskForm from './components/TaskForm';
+import TaskList from './components/TaskList';
 
-function App() {
+const App: React.FC = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Button type="primary" onClick={handleOpenModal}>
+        Add Task
+      </Button>
+
+      {/* Modal for adding task */}
+      <Modal title="Add Task" visible={isModalVisible} onCancel={handleCloseModal} footer={null}>
+        <TaskForm onClose={handleCloseModal} />
+      </Modal>
+
+      <TaskList />
     </div>
   );
-}
+};
 
 export default App;
