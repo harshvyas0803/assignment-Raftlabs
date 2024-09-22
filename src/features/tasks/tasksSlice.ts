@@ -15,8 +15,15 @@ interface TasksState {
   tasks: Task[];
 }
 
+// Load tasks from local storage
+const loadTasksFromLocalStorage = (): Task[] => {
+  const savedTasks = localStorage.getItem('tasks');
+  return savedTasks ? JSON.parse(savedTasks) : [];
+};
+
+// Define the initial state
 const initialState: TasksState = {
-  tasks: []
+  tasks: loadTasksFromLocalStorage(),
 };
 
 const tasksSlice = createSlice({
@@ -26,17 +33,20 @@ const tasksSlice = createSlice({
     // Add task
     addTask: (state, action: PayloadAction<Task>) => {
       state.tasks.push(action.payload);
+      localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Save to local storage
     },
     // Edit task
     editTask: (state, action: PayloadAction<Task>) => {
       const index = state.tasks.findIndex(task => task.id === action.payload.id);
       if (index !== -1) {
         state.tasks[index] = action.payload;
+        localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Update local storage
       }
     },
     // Delete task
     deleteTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter(task => task.id !== action.payload);
+      localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Update local storage
     }
   }
 });

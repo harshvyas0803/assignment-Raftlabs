@@ -1,17 +1,27 @@
 import React from 'react';
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { deleteTask } from '../features/tasks/tasksSlice';
+import { useState } from 'react';
+interface TaskListProps {
+  onEdit: (task: any) => void; // Accept an onEdit prop
+}
 
-const TaskList: React.FC = () => {
+const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
   const dispatch = useDispatch();
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Handle task deletion
   const handleDelete = (id: string) => {
     dispatch(deleteTask(id));
   };
+
+  // Filter tasks based on search term
+  const filteredTasks = tasks.filter(task =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Define columns for the Ant Design Table
   const columns = [
@@ -53,14 +63,32 @@ const TaskList: React.FC = () => {
       title: 'Action',
       key: 'action',
       render: (_: any, record: any) => (
-        <Button danger onClick={() => handleDelete(record.id)}>
-          Delete
-        </Button>
+        <>
+          <Button onClick={() => onEdit(record)}>Edit</Button>
+          <Button danger onClick={() => handleDelete(record.id)}>
+            Delete
+          </Button>
+        </>
       ),
     },
   ];
 
-  return <Table dataSource={tasks} columns={columns} rowKey="id" />;
+  return (
+    <div>
+      <Input
+        placeholder="Search tasks..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4"
+      />
+      <Table
+        dataSource={filteredTasks}
+        columns={columns}
+        rowKey="id"
+      />
+    </div>
+  );
 };
 
 export default TaskList;
+

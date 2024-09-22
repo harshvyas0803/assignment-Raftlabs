@@ -47,7 +47,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={onFinish} className="p-4 bg-white rounded shadow-md">
+
       <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter a title' }]}>
         <Input />
       </Form.Item>
