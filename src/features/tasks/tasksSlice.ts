@@ -21,7 +21,7 @@ const loadTasksFromLocalStorage = (): Task[] => {
   return savedTasks ? JSON.parse(savedTasks) : [];
 };
 
-// Define the initial state
+//   initial state
 const initialState: TasksState = {
   tasks: loadTasksFromLocalStorage(),
 };
@@ -51,8 +51,7 @@ const tasksSlice = createSlice({
   }
 });
 
-// Export actions
+// Export  
 export const { addTask, editTask, deleteTask } = tasksSlice.actions;
-
-// Export the reducer
+ 
 export default tasksSlice.reducer;

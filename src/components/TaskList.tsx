@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Table, Tag, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { deleteTask } from '../features/tasks/tasksSlice';
-import { useState } from 'react';
+import { motion } from 'framer-motion';
+
 interface TaskListProps {
   onEdit: (task: any) => void; // Accept an onEdit prop
 }
@@ -82,13 +83,31 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
         className="mb-4"
       />
       <Table
-        dataSource={filteredTasks}
+        dataSource={filteredTasks.map(task => ({
+          ...task,
+          key: task.id,
+        }))}
         columns={columns}
         rowKey="id"
+        components={{
+          body: {
+            row: ({ children, ...rest }: { children: React.ReactNode; [key: string]: any }) => (
+              <motion.tr
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                whileHover={{ scale: 1.02 }} // Scale on hover
+                {...rest}
+              >
+                {children}
+              </motion.tr>
+            ),
+          },
+        }}
       />
     </div>
   );
 };
 
 export default TaskList;
-

@@ -4,11 +4,12 @@ import { useDispatch } from 'react-redux';
 import { addTask, editTask } from '../features/tasks/tasksSlice';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
+import { motion } from 'framer-motion';
 
-// Define the props for TaskForm
+// Props for TaskForm
 interface TaskFormProps {
-  task?: any; // Optional task for editing
-  onClose?: () => void; // Function to close form modal
+  task?: any;  
+  onClose?: () => void;  
 }
 
 const { Option } = Select;
@@ -17,7 +18,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
-  // Pre-fill form if editing
   useEffect(() => {
     if (task) {
       form.setFieldsValue({
@@ -27,7 +27,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
     }
   }, [task, form]);
 
-  // Handle form submit
+  // Handle form submit 
   const onFinish = (values: any) => {
     const taskData = {
       ...values,
@@ -47,36 +47,42 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish} className="p-4 bg-white rounded shadow-md">
-
-      <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter a title' }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="description" label="Description">
-        <Input.TextArea rows={4} />
-      </Form.Item>
-      <Form.Item name="dueDate" label="Due Date" rules={[{ required: true, message: 'Please select a due date' }]}>
-        <DatePicker />
-      </Form.Item>
-      <Form.Item name="priority" label="Priority" rules={[{ required: true }]}>
-        <Select>
-          <Option value="low">Low</Option>
-          <Option value="medium">Medium</Option>
-          <Option value="high">High</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-        <Select>
-          <Option value="in-progress">In Progress</Option>
-          <Option value="completed">Completed</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          {task ? 'Update Task' : 'Add Task'}
-        </Button>
-      </Form.Item>
-    </Form>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Form form={form} layout="vertical" onFinish={onFinish} className="p-4 bg-white rounded shadow-md">
+        <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter a title' }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input.TextArea rows={4} />
+        </Form.Item>
+        <Form.Item name="dueDate" label="Due Date" rules={[{ required: true, message: 'Please select a due date' }]}>
+          <DatePicker />
+        </Form.Item>
+        <Form.Item name="priority" label="Priority" rules={[{ required: true }]}>
+          <Select>
+            <Option value="low">Low</Option>
+            <Option value="medium">Medium</Option>
+            <Option value="high">High</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="status" label="Status" rules={[{ required: true }]}>
+          <Select>
+            <Option value="in-progress">In Progress</Option>
+            <Option value="completed">Completed</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            {task ? 'Update Task' : 'Add Task'}
+          </Button>
+        </Form.Item>
+      </Form>
+    </motion.div>
   );
 };
 
