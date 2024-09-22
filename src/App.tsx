@@ -23,7 +23,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={handleOpenModal}>
+      <Button type="primary" className='m-2' onClick={handleOpenModal}>
         Add Task
       </Button>
 
